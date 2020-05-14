@@ -7,6 +7,7 @@ name = "pypi"
 
 [packages]
 biopython = "*"
+bio = "*"
 
 [requires]
 python_version = "3.7"
