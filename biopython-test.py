@@ -34,11 +34,13 @@ def process_genome(file_name, file_format="genbank"):
     """
 
     return_value = {}
+    record_ct = 0
 
     print("Loading genome data and hashing sequences...")
 
     for index, record in enumerate(SeqIO.parse(file_name, file_format)):
         print(".", end="")
+        record_ct += 1
 
         hasher = hashlib.sha512()
         hasher.update(record.seq.encode("UTF-8"))
@@ -68,15 +70,16 @@ def process_genome(file_name, file_format="genbank"):
         return_value.update({record.id: record_data})
 
     print("")
+    print("Loaded %s records." %record_ct)
 
     return return_value
 
-genomes = process_genome("genome-files/seq_2020-05-13_0236.gb")
+genomes = process_genome("genome-files/SARS-CoV-2_homo-sapiens_2020-05-13_0236.gb")
 
 genome_hashes = {}
 
 # See which DNA sequnces are indentical.
-print("Sorting genomes by DNA sequence hash and writing to file...")
+print("Sorting genomes by sequence hash and writing to file...")
 for genome in genomes:
     seq_hash = genomes[genome]['seq_hash']
 
@@ -99,5 +102,5 @@ for genome in genomes:
         genome_hashes[seq_hash]['locales'].append(country)
 
 # Write experiment results.
-with open("./output/dna_matches.json", "w") as dna_match:
+with open("./output/seq_matches.json", "w") as dna_match:
     dna_match.write(json.dumps(genome_hashes))
